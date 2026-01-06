@@ -3,6 +3,7 @@
 require('dotenv').config(); // Läser in miljövariabler från .env-filen
 const mongoose = require('mongoose'); // Importerar mongoose för MongoDB-anslutning
 const Hapi = require('@hapi/hapi'); // Importerar Hapi-ramverket för att skapa servern
+const auth = require('./auth'); // Importerar auth-filen
 
 // Startfunktion
 const init = async () => {
@@ -25,8 +26,12 @@ const init = async () => {
       console.error('Failed to connect to MongoDB', err);
     });
 
+  // Registrerar autentisering
+  await auth.register(server);
+
   // Importerar produkt-routes
   require('./routes/product.route')(server);
+  require('./routes/user.route')(server);
 
   // Startar servern
   await server.start();
