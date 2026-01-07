@@ -1,10 +1,11 @@
 const Joi = require('joi');
 const userController = require('../controllers/user.controller');
+const { isAdmin } = require('../middlewares/role');
 
 module.exports = (server) => {
   server.route([
 
-    // Login
+   // LOGIN: ska vara publik
     {
       method: 'POST',
       path: '/auth/login',
@@ -20,25 +21,25 @@ module.exports = (server) => {
       }
     },
 
-    // Skapa user (bara admin som kan göra det)
+    // SKAPA USER: ska vara publik (just nu)
     {
       method: 'POST',
       path: '/users',
       handler: userController.createUser,
       options: {
-        auth: false, // TA BORT SEN - Detta är bara så att jag kan lägga in users under testning
+        auth: false,
         validate: {
           payload: Joi.object({
             username: Joi.string().required(),
             email: Joi.string().email().required(),
             password: Joi.string().min(6).required(),
-            role: Joi.string().valid('user', 'admin').default('user')
+            role: Joi.string().valid('user', 'admin').default('user') // eller ta bort helt
           })
         }
       }
     },
 
-    // Hämtar alla users
+    // Hämtar alla users 
     {
       method: 'GET',
       path: '/users',

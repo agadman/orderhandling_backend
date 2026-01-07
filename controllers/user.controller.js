@@ -23,24 +23,25 @@ exports.getUserById = async (request, h) => {
 }
 
 exports.createUser = async (request, h) => {
-    try {
-        const { username, email, password, role } = request.payload;
-        const user = new User({ username, email, password, role });
-        
-        const savedUser = await user.save();
-        return h.response({
-            id: savedUser._id,
-            username: savedUser.username,
-            email: savedUser.email,
-            role: savedUser.role,
-            createdAt: savedUser.createdAt
-        }).code(201);
+  try {
+    const { username, email, password, role } = request.payload;
 
-    } catch (error) {
-        console.error(error);
-        return h.response({ message: error.message }).code(500);
-    }
-}
+    const user = new User({ username, email, password, role }); 
+    const savedUser = await user.save();
+
+    return h.response({
+      id: savedUser._id,
+      username: savedUser.username,
+      email: savedUser.email,
+      role: savedUser.role,
+      createdAt: savedUser.createdAt
+    }).code(201);
+
+  } catch (error) {
+    console.error(error);
+    return h.response({ message: error.message }).code(500);
+  }
+};
 
 exports.deleteUser = async (request, h) => {
     try {
@@ -52,35 +53,37 @@ exports.deleteUser = async (request, h) => {
 }
 
 exports.loginUser = async (request, h) => {
-    const { email, password } = request.payload;
-    try {
-        let user = await User.findOne({ email: email });
-        if (!user) {
-            return h.response({ message: 'Ogiltig e-post eller lösenord' }).code(401);
-        }
+  const { email, password } = request.payload;
 
-        const correctPassword = await bcrypt.compare(password, user.password);
-        if (!correctPassword) {
-            return h.response({ message: 'Ogiltig e-post eller lösenord' }).code(401);
-        }
-
-        const token = generateToken(user);
-
-        return h
-            .response({ message: 'Inloggning lyckades', user: { id: user._id, username: user.username, email: user.email, role: user.role } })
-            .state('jwt', token)
-
-    } catch (error) {
-        console.error(error);
-        return h.response({ message: error.message }).code(500);
+  try {
+    const user = await User.findOne({ email }).select('+password'); 
+    if (!user) {
+      return h.response({ message: 'Ogiltig e-post eller lösenord' }).code(401);
     }
-}
+
+    const correctPassword = await bcrypt.compare(password, user.password);
+    if (!correctPassword) {
+      return h.response({ message: 'Ogiltig e-post eller lösenord' }).code(401);
+    }
+
+    const token = generateToken(user);
+
+    return h
+      .response({
+        message: 'Inloggning lyckades',
+        user: { id: user._id, username: user.username, email: user.email, role: user.role }
+      })
+      .state('jwt', token);
+  } catch (error) {
+    console.error(error);
+    return h.response({ message: error.message }).code(500);
+  }
+};
 
 const generateToken = (user) => {
-    const token = Jwt.token.generate(
-        { user },
-        { key: process.env.JWT_SECRET, algorithm: 'HS256' },
-        { ttlSec: 24 * 60 * 60 * 1000 } // 24h
-    );
-    return token;
-}
+  return Jwt.token.generate(
+    { id: user._id, email: user.email, role: user.role },
+    { key: process.env.JWT_SECRET, algorithm: 'HS256' },
+    { ttlSec: 24 * 60 * 60 }
+  );
+};
