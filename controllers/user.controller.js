@@ -24,7 +24,15 @@ exports.getUserById = async (request, h) => {
 
 exports.createUser = async (request, h) => {
   try {
-    const { username, email, password, role } = request.payload;
+    const { username, email, password } = request.payload;
+
+      // Default: alltid user
+    let role = 'user';
+
+    // Endast admin får sätta admin
+    if (request.auth?.isAuthenticated && request.auth.credentials?.role === 'admin') {
+      role = request.payload.role || 'user';
+    }
 
     const user = new User({ username, email, password, role }); 
     const savedUser = await user.save();
@@ -80,9 +88,22 @@ exports.loginUser = async (request, h) => {
   }
 };
 
+exports.me = async (request, h) => {
+  return h.response({
+    user: request.auth.credentials
+  }).code(200);
+};
+
 const generateToken = (user) => {
   return Jwt.token.generate(
-    { id: user._id, email: user.email, role: user.role },
+    {
+      user: {
+        id: user._id.toString(),
+        email: user.email,
+        role: user.role,
+        username: user.username
+      }
+    },
     { key: process.env.JWT_SECRET, algorithm: 'HS256' },
     { ttlSec: 24 * 60 * 60 }
   );

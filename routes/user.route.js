@@ -21,13 +21,22 @@ module.exports = (server) => {
       }
     },
 
+    // Metod för att kolla om man är inloggad 
+    {
+      method: 'GET',
+      path: '/auth/me',
+      handler: (request, h) => {
+        return h.response({ user: request.auth.credentials }).code(200);
+      }
+    },
+
     // SKAPA USER: ska vara publik (just nu)
     {
       method: 'POST',
       path: '/users',
       handler: userController.createUser,
       options: {
-        auth: false,
+        pre: [{ method: isAdmin }],
         validate: {
           payload: Joi.object({
             username: Joi.string().required(),
@@ -66,6 +75,7 @@ module.exports = (server) => {
       path: '/users/{id}',
       handler: userController.deleteUser,
       options: {
+        pre: [{ method: isAdmin }],
         validate: {
           params: Joi.object({
             id: Joi.string().length(24).required()

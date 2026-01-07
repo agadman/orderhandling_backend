@@ -32,7 +32,7 @@ module.exports = {
 
           return {
             isValid: true,
-            credentials: artifacts.decoded.payload
+            credentials: artifacts.decoded.payload.user
           };
         } catch (err) {
           console.error('Session validation failed:', err);
