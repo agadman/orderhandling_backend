@@ -4,8 +4,8 @@ const { isAdmin } = require('../middlewares/role');
 
 module.exports = (server) => {
   server.route([
-
-   // LOGIN: ska vara publik
+    
+    // LOGGA IN
     {
       method: 'POST',
       path: '/auth/login',
@@ -20,8 +20,8 @@ module.exports = (server) => {
         }
       }
     },
-
-    // Metod för att kolla om man är inloggad 
+    
+    // METOD FÖR ATT KOLLA OM OCH VEM SOM ÄR INLOGGAD
     {
       method: 'GET',
       path: '/auth/me',
@@ -30,7 +30,22 @@ module.exports = (server) => {
       }
     },
 
-    // SKAPA USER: ska vara publik (just nu)
+    // LOGGA UT
+    {
+      method: 'POST',
+      path: '/auth/logout',
+      handler: (request, h) => {
+        return h
+          .response({ message: 'Logged out' })
+          .unstate('jwt') 
+          .code(200);
+      },
+      options: {
+        auth: false 
+      }
+    },
+
+    // SKAPA USER (ENDAST ADMIN)
     {
       method: 'POST',
       path: '/users',
@@ -42,20 +57,20 @@ module.exports = (server) => {
             username: Joi.string().required(),
             email: Joi.string().email().required(),
             password: Joi.string().min(6).required(),
-            role: Joi.string().valid('user', 'admin').default('user') // eller ta bort helt
+            role: Joi.string().valid('user', 'admin').default('user') 
           })
         }
       }
     },
 
-    // Hämtar alla users 
+    // HÄMTAR ALLA USERS
     {
       method: 'GET',
       path: '/users',
       handler: userController.getAllUsers
     },
 
-    // Hämtar user med specifikt id
+    // HÄMTAR USER MED SPECIFIKT ID
     {
       method: 'GET',
       path: '/users/{id}',
@@ -69,7 +84,7 @@ module.exports = (server) => {
       }
     },
 
-    // Tar bort user med specifikt id
+    // TAR BORT USER MED SPECIFIKT ID (ENDAST ADMIN)
     {
       method: 'DELETE',
       path: '/users/{id}',

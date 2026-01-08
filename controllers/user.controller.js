@@ -26,15 +26,13 @@ exports.createUser = async (request, h) => {
   try {
     const { username, email, password } = request.payload;
 
-      // Default: alltid user
     let role = 'user';
 
-    // Endast admin får sätta admin
-    if (request.auth?.isAuthenticated && request.auth.credentials?.role === 'admin') {
+    if (request.auth?.credentials?.role === 'admin') {
       role = request.payload.role || 'user';
     }
 
-    const user = new User({ username, email, password, role }); 
+    const user = new User({ username, email, password, role });
     const savedUser = await user.save();
 
     return h.response({
@@ -66,19 +64,19 @@ exports.loginUser = async (request, h) => {
   try {
     const user = await User.findOne({ email }).select('+password'); 
     if (!user) {
-      return h.response({ message: 'Ogiltig e-post eller lösenord' }).code(401);
+      return h.response({ message: 'Invalid email or password' }).code(401);
     }
 
     const correctPassword = await bcrypt.compare(password, user.password);
     if (!correctPassword) {
-      return h.response({ message: 'Ogiltig e-post eller lösenord' }).code(401);
+      return h.response({ message: 'Invalid email or password' }).code(401);
     }
 
     const token = generateToken(user);
 
     return h
       .response({
-        message: 'Inloggning lyckades',
+        message: 'Login successful',
         user: { id: user._id, username: user.username, email: user.email, role: user.role }
       })
       .state('jwt', token);

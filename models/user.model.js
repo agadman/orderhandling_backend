@@ -4,19 +4,19 @@ const bcrypt = require('bcrypt'); // importerar bcrypt för att hasha lösenord
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
-        required: [true, 'Användarnamn krävs'],
+        required: [true, 'Username is required'],
         unique: true,
         trim: true
     },
     email: {
         type: String,
-        required: [true, 'E-post krävs'],
+        required: [true, 'Email is required'],
         unique: true,
         lowercase: true
     },
     password: {
         type: String,
-        required: [true, 'Lösenord krävs'],
+        required: [true, 'Password is required'],
         minlength: 6,
         select: false
     },

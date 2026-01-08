@@ -7,15 +7,13 @@ module.exports = (server) => {
     {
       method: 'GET',
       path: '/products',
-      handler: productController.getAllProducts,
-      options: { auth: false } // GÖR DEN PUBLIK TILLFÄLLIGT FÖR TESTNING
+      handler: productController.getAllProducts
     },
     {
       method: 'GET',
       path: '/products/{id}',
       handler: productController.getProductById,
       options: {
-        auth: false, // GÖR DEN PUBLIK TILLFÄLLIGT FÖR TESTNING
         validate: {
           params: Joi.object({
             id: Joi.string().length(24).required()

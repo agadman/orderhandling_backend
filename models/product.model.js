@@ -3,22 +3,22 @@ const mongoose = require('mongoose');
 const productSchema = new mongoose.Schema({
   name: { 
     type: String, 
-    required: [true, "Du måste ange ett namn på produkten."], 
+    required: [true, "You must enter a product name."], 
     unique: true 
   },
   price: { 
     type: Number, 
-    required: [true, "Du måste ange ett pris på produkten."], 
-    min: [0, "Priset måste vara minst 0."] 
+    required: [true, "You must enter a price for the product."], 
+    min: [0, "Price must be at least 0."] 
   },
   category: { 
     type: String, 
-    required: [true, "Du måste ange en kategori för produkten."] 
+    required: [true, "You must enter a category for the product."]
   },
   inStock: { 
     type: Number, 
-    required: [true, "Du måste ange antal i lager."], 
-    min: [0, "Antal i lager kan inte vara negativt."] 
+    required: [true, "You must enter the number of items in stock."], 
+    min: [0, "The number of items in stock cannot be negative."] 
   },
   description: { 
     type: String 
