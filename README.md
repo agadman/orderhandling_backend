@@ -16,30 +16,6 @@ Projektet är uppbyggt med följande tekniker och bibliotek:
 - **dotenv** – Hantering av miljövariabler
 - **nodemon** – Automatisk omstart vid kodändringar (utveckling)
 
-## Projektstruktur
-orderhandling_backend/
-│
-├── server.js
-├── auth.js
-├── .env
-├── .gitignore
-├── package.json
-│
-├── models/
-│   ├── product.model.js
-│   └── user.model.js
-│
-├── controllers/
-│   ├── product.controller.js
-│   └── user.controller.js
-│
-├── routes/
-│   ├── product.route.js
-│   └── user.route.js
-│
-└── middlewares/
-    └── role.js
-
 ## Installation och uppstart
 1. Klona projektet
 2. Installera beroenden: npm install
