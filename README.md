@@ -20,10 +20,10 @@ Projektet är uppbyggt med följande tekniker och bibliotek:
 1. Klona projektet
 2. Installera beroenden: npm install
 3. Skapa .env-fil med följande innehåll:
-   PORT=3000
-   MONGO_URI=mongodb://localhost:27017/orderhandling
-   JWT_SECRET=your_jwt_secret_here
-   COOKIE_PASSWORD=your_cookie_password_here
+- PORT=3000
+- MONGO_URI=mongodb://localhost:27017/orderhandling
+- JWT_SECRET=your_jwt_secret_here
+- COOKIE_PASSWORD=your_cookie_password_here
 
 Notering:
 - COOKIE_PASSWORD måste vara minst 32 tecken långt (krav från @hapi/cookie).
