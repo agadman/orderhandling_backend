@@ -22,8 +22,16 @@ const productSchema = new mongoose.Schema({
   },
   description: { 
     type: String 
-  }
-});
+  },
+  createdBy: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User' 
+  },
+  updatedBy: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User' 
+  },
+}, { timestamps: true });
 
 const Product = mongoose.model('Product', productSchema);
 
